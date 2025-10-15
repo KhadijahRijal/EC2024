@@ -154,3 +154,41 @@ fig.tight_layout()
 
 # 4. Display the figure using Streamlit
 st.pyplot(fig)
+
+
+# --- Streamlit App Code ---
+
+st.title("Academic Year Distribution Violin Plot")
+
+# --- Dummy Data Setup (Replace with your actual data loading) ---
+# Create a dummy DataFrame arts_df for demonstration
+np.random.seed(42)
+years = ['Year 1', 'Year 2', 'Year 3', 'Year 4']
+data = {
+    'Bachelor  Academic Year in EU': np.random.choice(years, size=300, p=[0.3, 0.25, 0.2, 0.25]),
+    # Adding a dummy numerical variable that might be used in a real-world violin plot
+    'Numerical_Score': np.random.normal(loc=75, scale=10, size=300)
+}
+arts_df = pd.DataFrame(data)
+# -----------------------------------------------------------------
+
+# 1. Create the figure and axes objects explicitly
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# 2. Use Seaborn to create the violin plot, passing the axis object
+sns.violinplot(
+    data=arts_df,
+    x='Bachelor  Academic Year in EU',
+    ax=ax # <--- Crucial step: Directs the plot to the figure's axis
+)
+
+# 3. Set the title and labels using the axis object
+ax.set_title('Distribution of Bachelor Academic Year in Arts Faculty')
+ax.set_xlabel('Bachelor Academic Year in EU')
+ax.set_ylabel('Density')
+
+# Adjust layout to prevent clipping
+fig.tight_layout()
+
+# 4. Display the figure using Streamlit
+st.pyplot(fig)
