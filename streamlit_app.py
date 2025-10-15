@@ -106,3 +106,51 @@ ax.set_ylabel('Frequency')
 
 # 4. Display the figure using Streamlit
 st.pyplot(fig)
+
+
+# --- Start of Streamlit App Code ---
+
+st.title("Academic Year Distribution by Gender")
+
+# **Dummy DataFrame Creation**
+# *Replace this entire block with your actual data loading and setup*
+# *e.g., arts_df = pd.read_csv('arts_data.csv')*
+np.random.seed(42)
+years = ['Year 1', 'Year 2', 'Year 3', 'Year 4']
+genders = ['Male', 'Female']
+data = {
+    'Bachelor  Academic Year in EU': np.random.choice(years, size=300, p=[0.3, 0.25, 0.2, 0.25]),
+    'Gender': np.random.choice(genders, size=300, p=[0.48, 0.52])
+}
+arts_df = pd.DataFrame(data)
+# -----------------------------------
+
+# Group the data by 'Bachelor Academic Year in EU' and 'Gender' and count occurrences
+# Note: The column name has spaces, which is handled correctly by the groupby and plotting functions.
+academic_year_gender_counts = arts_df.groupby(['Bachelor  Academic Year in EU', 'Gender']).size().reset_index(name='Count')
+
+# 1. Create the figure and axes objects explicitly
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# 2. Use Seaborn to create the bar plot on the specific axis (ax)
+sns.barplot(
+    data=academic_year_gender_counts,
+    x='Bachelor  Academic Year in EU',
+    y='Count',
+    hue='Gender',
+    ax=ax # IMPORTANT: Pass the axis object to the seaborn function
+)
+
+# 3. Set the title, labels, and rotations using the axis object
+ax.set_title('Distribution of Bachelor Academic Year in Arts Faculty by Gender')
+ax.set_xlabel('Bachelor Academic Year in EU')
+ax.set_ylabel('Count')
+
+# Rotate x-axis labels
+plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
+
+# Adjust layout to prevent labels from being cut off
+fig.tight_layout()
+
+# 4. Display the figure using Streamlit
+st.pyplot(fig)
