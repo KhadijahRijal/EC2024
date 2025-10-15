@@ -16,7 +16,7 @@ st.header("Scientific Visualization", divider="gray")
 # For demonstration, creating a dummy arts_df
 # Replace this section with your actual data loading
 data = {
-    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.40, 0.60])
+    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.32, 0.68])
 }
 arts_df = pd.DataFrame(data)
 # --- END OF DUMMY DATA ---
@@ -48,7 +48,7 @@ st.title("Gender Distribution Pie Chart")
 # *Replace this entire block with your actual data loading and setup*
 # *e.g., df = pd.read_csv('your_data.csv')*
 data = {
-    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.60, 0.40])
+    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.61, 0.39])
 }
 df = pd.DataFrame(data)
 # -----------------------------------
