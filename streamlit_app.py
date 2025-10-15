@@ -2,6 +2,8 @@ import streamlit as st
 import plotly.express as px
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 st.set_page_config(
     page_title="Scientific Visualization"
@@ -36,3 +38,36 @@ fig = px.bar(
 # Display the Plotly figure in Streamlit
 st.title("Arts Faculty Data Visualization")
 st.plotly_chart(fig, use_container_width=True)
+
+
+# --- Start of Streamlit App Code ---
+
+st.title("Gender Distribution Pie Chart")
+
+# **Dummy DataFrame Creation**
+# *Replace this entire block with your actual data loading and setup*
+# *e.g., df = pd.read_csv('your_data.csv')*
+data = {
+    'Gender': np.random.choice(['Male', 'Female', 'Other'], size=100, p=[0.45, 0.50, 0.05])
+}
+df = pd.DataFrame(data)
+# -----------------------------------
+
+# Count the occurrences of each gender
+gender_counts = df['Gender'].value_counts()
+
+# Create a figure object (Crucial for Streamlit)
+fig, ax = plt.subplots(figsize=(6, 6))
+
+# Create the pie chart on the figure's axis
+ax.pie(
+    gender_counts,
+    labels=gender_counts.index,
+    autopct='%1.1f%%',
+    startangle=140
+)
+ax.set_title('Distribution of Gender')
+ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+# **Display the figure in Streamlit**
+st.pyplot(fig)
