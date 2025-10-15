@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="Scientific Visualization"
 )
 
-st.header("Genetic Algorithm", divider="gray")
+st.header("Scientific Visualization", divider="gray")
 
 
 # --- ASSUMING 'arts_df' IS LOADED HERE ---
