@@ -14,7 +14,7 @@ st.header("Genetic Algorithm", divider="gray")
 # For demonstration, creating a dummy arts_df
 # Replace this section with your actual data loading
 data = {
-    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.45, 0.50, 0.05])
+    'Gender': np.random.choice(['Male', 'Female'], size=100, p=[0.45, 0.50])
 }
 arts_df = pd.DataFrame(data)
 # --- END OF DUMMY DATA ---
