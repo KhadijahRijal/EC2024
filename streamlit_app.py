@@ -3,6 +3,7 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 st.set_page_config(
@@ -70,4 +71,38 @@ ax.set_title('Distribution of Gender')
 ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
 # **Display the figure in Streamlit**
+st.pyplot(fig)
+
+
+# --- Start of Streamlit App Code ---
+
+st.title("S.S.C (GPA) Distribution Histogram")
+
+# **Dummy DataFrame Creation**
+# *Replace this entire block with your actual data loading and setup*
+# *e.g., arts_df = pd.read_csv('arts_data.csv')*
+np.random.seed(42)
+data = {
+    'S.S.C (GPA)': np.random.normal(loc=4.5, scale=0.8, size=200)
+}
+arts_df = pd.DataFrame(data)
+# -----------------------------------
+
+# 1. Create the figure and axes objects explicitly
+fig, ax = plt.subplots(figsize=(8, 6))
+
+# 2. Use Seaborn to create the histogram on the specific axis (ax)
+sns.histplot(
+    data=arts_df,
+    x='S.S.C (GPA)',
+    kde=True,
+    ax=ax # IMPORTANT: Pass the axis object to the seaborn function
+)
+
+# 3. Set the title and labels using the axis object
+ax.set_title('Distribution of S.S.C (GPA) in Arts Faculty')
+ax.set_xlabel('S.S.C (GPA)')
+ax.set_ylabel('Frequency')
+
+# 4. Display the figure using Streamlit
 st.pyplot(fig)
