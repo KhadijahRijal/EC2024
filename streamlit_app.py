@@ -5,13 +5,54 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-
 st.set_page_config(
     page_title="Scientific Visualization"
 )
 
 st.header("Scientific Visualization", divider="gray")
 
+
+# URL of the CSV file
+file_url = 'https://raw.githubusercontent.com/KhadijahRijal/EC2024/refs/heads/main/student_survey_exported.csv'
+
+# Use st.cache_data to cache the function's output.
+# This prevents Streamlit from re-downloading and re-loading the data 
+# every time the app re-runs, making it much faster.
+@st.cache_data
+def load_data(url):
+    """Loads the CSV file from the URL into a pandas DataFrame."""
+    try:
+        df = pd.read_csv(url)
+        return df
+    except Exception as e:
+        # Streamlit will display this error message in the app
+        st.error(f"An error occurred while loading the data: {e}")
+        return pd.DataFrame() # Return an empty DataFrame on failure
+
+# Load the data
+df_url = load_data(file_url)
+
+# --- Streamlit App Layout ---
+
+st.title("Student Survey Data Viewer 📊")
+
+# Check if the DataFrame is not empty before attempting to display
+if not df_url.empty:
+    st.success("CSV file loaded successfully from URL!")
+
+    # Use Streamlit's st.header for a section title
+    st.header("First 5 Rows of the DataFrame")
+    
+    # Use st.dataframe to display the entire DataFrame
+    st.dataframe(df_url.head())
+    
+    st.header("DataFrame Information")
+    
+    # Display the shape and some info (optional but useful)
+    st.write(f"The DataFrame has **{df_url.shape[0]}** rows and **{df_url.shape[1]}** columns.")
+    
+else:
+    st.warning("Could not load data. Please check the URL and your connection.")
 
 # --- ASSUMING 'arts_df' IS LOADED HERE ---
 # For demonstration, creating a dummy arts_df
