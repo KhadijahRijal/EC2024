@@ -233,3 +233,104 @@ fig.tight_layout()
 
 # 4. Display the figure using Streamlit
 st.pyplot(fig)
+
+
+# --- 1. Data Loading and Caching ---
+file_url = 'https://raw.githubusercontent.com/KhadijahRijal/EC2024/refs/heads/main/student_survey_exported.csv'
+
+@st.cache_data
+def load_data(url):
+    """Loads the CSV file from the URL into a pandas DataFrame."""
+    try:
+        df = pd.read_csv(url)
+        return df
+    except Exception as e:
+        st.error(f"An error occurred while loading the data: {e}")
+        return pd.DataFrame()
+
+df_raw = load_data(file_url)
+
+# --- 2. Data Preparation and Sanitization ---
+# Define the expected columns based on your analysis
+EXPECTED_ACADEMIC_YEAR_COL = 'Bachelor Academic Year in EU'
+EXPECTED_GENDER_COL = 'Gender'
+
+df = df_raw.copy()
+
+# Ensure data structure is robust for analysis steps (Handles potential missing/renamed columns)
+if EXPECTED_ACADEMIC_YEAR_COL not in df.columns:
+    st.warning(f"Column '{EXPECTED_ACADEMIC_YEAR_COL}' not found. Using dummy data for structure.")
+    df[EXPECTED_ACADEMIC_YEAR_COL] = np.random.choice(['Year 1', 'Year 2', 'Year 3', 'Year 4+'], size=len(df))
+if EXPECTED_GENDER_COL not in df.columns:
+    st.warning(f"Column '{EXPECTED_GENDER_COL}' not found. Using dummy data for structure.")
+    df[EXPECTED_GENDER_COL] = np.random.choice(['Female', 'Male', 'Other'], size=len(df))
+
+# Clean up whitespace in column data
+for col_name in [EXPECTED_ACADEMIC_YEAR_COL, EXPECTED_GENDER_COL]:
+    if col_name in df.columns:
+        df[col_name] = df[col_name].astype(str).str.strip()
+
+
+# --- 3. Key Insight Text Definitions ---
+# Extracted directly from key_survey_insights.md
+INSIGHT_TEXTS = {
+    1: "This analysis shows the distribution of students across academic years, segmented by gender. This is vital for understanding demographic balance throughout the program's lifecycle and ensuring equitable engagement.",
+    2: "The overall gender balance in the survey population provides crucial context for all other analyses, highlighting the primary gender representation within the sample group.",
+    3: "Identifying which academic years have the highest representation in the survey can indicate potential sampling bias or confirm an intentional focus on specific undergraduate phases (e.g., higher response rates from first-year students).",
+    4: "This analysis visualizes the concentration of respondents across the academic years. The height of the bar (or the density peak in a violin plot) confirms where the majority of survey responses are concentrated, which is essential for assessing sample representativeness."
+}
+
+
+# --- 4. Streamlit Application Layout ---
+
+st.set_page_config(layout="wide")
+
+st.title("Student Survey Demographic Insights")
+st.markdown("---")
+
+if df.empty:
+    st.error("Cannot display insights because the data could not be loaded or is empty.")
+else:
+    st.header("Key Findings: Gender and Academic Year Distribution")
+
+    # -----------------------------------------------------
+    # INSIGHT 1: Academic Year Breakdown by Gender
+    # -----------------------------------------------------
+    st.subheader("1. Academic Year Breakdown by Gender 👫")
+    st.info(f"Insight: {INSIGHT_TEXTS[1]}") 
+    
+    # Placeholder for your Matplotlib/Seaborn code for the grouped bar plot
+    # Example: st.pyplot(your_matplotlib_figure_object)
+    st.markdown("**[Insert Grouped Bar Chart or appropriate visualization here]**")
+    st.markdown("---")
+
+    # -----------------------------------------------------
+    # INSIGHT 2: Overall Gender Split
+    # -----------------------------------------------------
+    st.subheader("2. Overall Gender Split 🚻")
+    st.info(f"Insight: {INSIGHT_TEXTS[2]}") 
+    
+    # Placeholder for your Donut Chart or Pie Chart code
+    st.markdown("**[Insert Overall Gender Distribution Chart here]**")
+    st.markdown("---")
+
+    # -----------------------------------------------------
+    # INSIGHT 3: Academic Year Enrollment Focus
+    # -----------------------------------------------------
+    st.subheader("3. Academic Year Enrollment Focus 📅")
+    st.info(f"Insight: {INSIGHT_TEXTS[3]}") 
+    
+    # Placeholder for your simple Academic Year Bar Chart code
+    st.markdown("**[Insert Academic Year Count Chart here]**")
+    st.markdown("---")
+    
+    # -----------------------------------------------------
+    # INSIGHT 4: Analysis of Response Density by Academic Year
+    # -----------------------------------------------------
+    st.subheader("4. Analysis of Response Density 📉")
+    st.info(f"Insight: {INSIGHT_TEXTS[4]}") 
+    
+    # Placeholder for your Violin Plot or Density-based visualization code
+    st.markdown("**[Insert Violin Plot or Density Chart here]**")
+    st.markdown("---")
+
