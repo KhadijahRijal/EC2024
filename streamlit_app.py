@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import altair as alt # Needed for creating interactive charts
 
 st.set_page_config(
     page_title="Scientific Visualization"
@@ -257,10 +258,13 @@ EXPECTED_GENDER_COL = 'Gender'
 
 df = df_raw.copy()
 
+# Define custom year order for all academic year charts
+YEAR_ORDER = ['Year 1', 'Year 2', 'Year 3', 'Year 4+']
+
 # Ensure data structure is robust for analysis steps (Handles potential missing/renamed columns)
 if EXPECTED_ACADEMIC_YEAR_COL not in df.columns:
     st.warning(f"Column '{EXPECTED_ACADEMIC_YEAR_COL}' not found. Using dummy data for structure.")
-    df[EXPECTED_ACADEMIC_YEAR_COL] = np.random.choice(['Year 1', 'Year 2', 'Year 3', 'Year 4+'], size=len(df))
+    df[EXPECTED_ACADEMIC_YEAR_COL] = np.random.choice(YEAR_ORDER, size=len(df))
 if EXPECTED_GENDER_COL not in df.columns:
     st.warning(f"Column '{EXPECTED_GENDER_COL}' not found. Using dummy data for structure.")
     df[EXPECTED_GENDER_COL] = np.random.choice(['Female', 'Male', 'Other'], size=len(df))
@@ -272,7 +276,6 @@ for col_name in [EXPECTED_ACADEMIC_YEAR_COL, EXPECTED_GENDER_COL]:
 
 
 # --- 3. Key Insight Text Definitions ---
-# Extracted directly from key_survey_insights.md
 INSIGHT_TEXTS = {
     1: "This analysis shows the distribution of students across academic years, segmented by gender. This is vital for understanding demographic balance throughout the program's lifecycle and ensuring equitable engagement.",
     2: "The overall gender balance in the survey population provides crucial context for all other analyses, highlighting the primary gender representation within the sample group.",
@@ -294,34 +297,75 @@ else:
     st.header("Key Findings: Gender and Academic Year Distribution")
 
     # -----------------------------------------------------
-    # INSIGHT 1: Academic Year Breakdown by Gender
+    # INSIGHT 1: Academic Year Breakdown by Gender (Grouped Bar Chart)
     # -----------------------------------------------------
     st.subheader("1. Academic Year Breakdown by Gender 👫")
     st.info(f"Insight: {INSIGHT_TEXTS[1]}") 
     
-    # Placeholder for your Matplotlib/Seaborn code for the grouped bar plot
-    # Example: st.pyplot(your_matplotlib_figure_object)
-    st.markdown()
+    # Analysis and Chart Generation for Insight 1
+    academic_year_gender_counts = df.groupby([EXPECTED_ACADEMIC_YEAR_COL, EXPECTED_GENDER_COL]).size().reset_index(name='Count')
+    academic_year_gender_counts.columns = ['AcademicYear', 'Gender', 'Count']
+    
+    chart1 = alt.Chart(academic_year_gender_counts).mark_bar().encode(
+        # Use the custom order for the X-axis
+        x=alt.X('AcademicYear', sort=YEAR_ORDER, title='Academic Year in EU'),
+        y=alt.Y('Count', title='Number of Students'),
+        # Hue encodes the gender
+        color='Gender',
+        tooltip=['AcademicYear', 'Gender', 'Count']
+    ).properties(
+        title="Distribution of Academic Year by Gender"
+    ).interactive()
+    
+    st.altair_chart(chart1, use_container_width=True)
     st.markdown("---")
 
     # -----------------------------------------------------
-    # INSIGHT 2: Overall Gender Split
+    # INSIGHT 2: Overall Gender Split (Donut Chart)
     # -----------------------------------------------------
     st.subheader("2. Overall Gender Split 🚻")
     st.info(f"Insight: {INSIGHT_TEXTS[2]}") 
     
-    # Placeholder for your Donut Chart or Pie Chart code
-    st.markdown()
+    # Analysis and Chart Generation for Insight 2
+    gender_counts = df[EXPECTED_GENDER_COL].value_counts().reset_index()
+    gender_counts.columns = ['Gender', 'Count']
+    
+    chart2 = alt.Chart(gender_counts).mark_arc(innerRadius=80, outerRadius=120).encode(
+        theta=alt.Theta(field="Count", type="quantitative"),
+        color=alt.Color(field="Gender", type="nominal"),
+        order=alt.Order(field="Count", sort="descending"),
+        tooltip=["Gender", "Count"]
+    ).properties(
+        title="Overall Gender Distribution"
+    )
+    
+    st.altair_chart(chart2, use_container_width=False)
     st.markdown("---")
 
+    # -----------------------------------------------------
+    # INSIGHT 3 & 4 (Setup): Academic Year Enrollment Focus / Response Density (Simple Bar Chart)
+    # -----------------------------------------------------
+    # Analysis and Chart Generation for Insights 3 & 4 (reuse the same data/chart)
+    year_counts = df[EXPECTED_ACADEMIC_YEAR_COL].value_counts().reset_index()
+    year_counts.columns = ['AcademicYear', 'Count']
+
+    chart3 = alt.Chart(year_counts).mark_bar().encode(
+        # Use the custom order for the X-axis
+        x=alt.X('AcademicYear', sort=YEAR_ORDER, title='Academic Year in EU'),
+        y=alt.Y('Count', title='Number of Students'),
+        tooltip=['AcademicYear', 'Count'],
+        color=alt.Color('AcademicYear', legend=None)
+    ).properties(
+        title="Count of Students by Academic Year"
+    ).interactive()
+    
     # -----------------------------------------------------
     # INSIGHT 3: Academic Year Enrollment Focus
     # -----------------------------------------------------
     st.subheader("3. Academic Year Enrollment Focus 📅")
     st.info(f"Insight: {INSIGHT_TEXTS[3]}") 
     
-    # Placeholder for your simple Academic Year Bar Chart code
-    st.markdown("**[Insert Academic Year Count Chart here]**")
+    st.altair_chart(chart3, use_container_width=True)
     st.markdown("---")
     
     # -----------------------------------------------------
@@ -330,7 +374,6 @@ else:
     st.subheader("4. Analysis of Response Density 📉")
     st.info(f"Insight: {INSIGHT_TEXTS[4]}") 
     
-    # Placeholder for your Violin Plot or Density-based visualization code
-    st.markdown()
+    # Reusing chart3 as it visualizes the frequency density for this categorical data
+    st.altair_chart(chart3, use_container_width=True)
     st.markdown("---")
-
