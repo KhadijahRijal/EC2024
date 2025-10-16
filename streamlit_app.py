@@ -301,7 +301,7 @@ else:
     
     # Placeholder for your Matplotlib/Seaborn code for the grouped bar plot
     # Example: st.pyplot(your_matplotlib_figure_object)
-    st.markdown("**[Insert Grouped Bar Chart or appropriate visualization here]**")
+    st.markdown()
     st.markdown("---")
 
     # -----------------------------------------------------
@@ -311,7 +311,7 @@ else:
     st.info(f"Insight: {INSIGHT_TEXTS[2]}") 
     
     # Placeholder for your Donut Chart or Pie Chart code
-    st.markdown("**[Insert Overall Gender Distribution Chart here]**")
+    st.markdown()
     st.markdown("---")
 
     # -----------------------------------------------------
@@ -331,6 +331,6 @@ else:
     st.info(f"Insight: {INSIGHT_TEXTS[4]}") 
     
     # Placeholder for your Violin Plot or Density-based visualization code
-    st.markdown("**[Insert Violin Plot or Density Chart here]**")
+    st.markdown()
     st.markdown("---")
 
